@@ -18,45 +18,89 @@ define("ER_HEADER", 21);
 define("ER_OPCODE", 22);
 define("ER_OTHER", 23);
 
-//functions for printing xml code
+//global variable for counting instructions
+$order = 1;
+
+//functions for printing xml code TODO: nepovolene znaky za koncem povolenych argumentu krom komentaru
 function no_args_opc(&$arr)
 {
-
+    global $order;
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
+    echo("  </instruction>\n");
+    $order++;
+    return;
 }
 
 function var_symb_opc(&$arr)
 {
+    global $order;
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
+    //arg1: variable expected
+    if(preg_match_all("/(LF|TF|GF)@[$&-_A-Za-z!?][0-9$&-_A-Za-z!?]*/", $arr[1])){
+        echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg1!\n");
+        exit(ER_OTHER);
+    }
+
+    //arg2: symb expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    $symb = explode("@", $arr[2]);
+    if(preg_match("/(LF|TF|GF)@[$&-_A-Za-z!?][0-9$&-_A-Za-z!?]*/", $arr[2])){
+        //symbol is a variable
+        echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
+    }
+    else if($symb[0] == "int"){
+        echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
+    }
+    else if($symb[0] == "bool"){
+        echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
+    }
+    else if($symb[0] == "string"){
+        echo("      <arg2 type=\"string\">").$symb[1]."</arg2>\n";
+    }
+    else if($symb[0] == "nil"){
+        echo("      <arg2 type=\"nil\">").$symb[1]."</arg2>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg2!\n");
+        exit(ER_OTHER);
+    }
+
+    echo("  </instruction>\n");
+    $order++;
+    return;
 }
 
 function var_opc(&$arr)
 {
-
+    global $order;
 }
 
 function label_opc(&$arr)
 {
-
+    global $order;
 }
 
 function symb_opc(&$arr)
 {
-
+    global $order;
 }
 
 function var_symb1_symb2_opc(&$arr)
 {
-
+    global $order;
 }
 
 function var_type_opc(&$arr)
 {
-
+    global $order;
 }
 
 function label_symb1_symb2_opc(&$arr)
 {
-
+    global $order;
 }
 
 //taking care of argument --help (-help)
@@ -77,34 +121,42 @@ if($argc > 1){
 
 
 $header_present = false;
-$order = 1;
-$opcode = "";
 
 //main loop
 while(($line = fgets(STDIN)) != NULL)
 {
-    trim($line, "\n");
+    //deleting new line, cutting line into array of strings and transfer the first word to uppercase
+    $line = rtrim($line);
     $arr = explode(" ", $line);
+    $arr[0] = strtoupper($arr[0]);
 
     //check for header
-    if(!$header_present){
-        if(strtoupper($arr[0]) == ".IPPCODE23"){
+    if(!($header_present)){
+        if($arr[0] == ".IPPCODE23"){
             $header_present = true;
 
             //printing xml header and root element
             echo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             echo("<program language=\"IPPcode23\">\n");
-
-            continue;
         }
         else{
             fprintf(STDERR,"Chybna nebo chybejici hlavicka ve zdrojovem kodu!\n");
             exit(ER_HEADER);
         }
+        
+        continue;
     }
     
-    switch(strtoupper($arr[0]))
+    //empty line -> skip
+    if(empty($line)){
+        continue;
+    }
+
+    switch($arr[0])
     {
+        /**** comment ****/
+        case "#":
+            break;
         /**** no args ****/
         case "CREATEFRAME":
         case "PUSHFRAME":
@@ -167,8 +219,6 @@ while(($line = fgets(STDIN)) != NULL)
             fprintf(STDERR, "Neznamy nebo chybny operacni kod ve zdrojovem kodu!\n");
             exit(ER_OPCODE);
     }
-    
-    #preg_match pro regex
 
 }
 
