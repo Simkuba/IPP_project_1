@@ -52,6 +52,7 @@ function var_symb_opc(&$arr)
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
     else if($symb[0] == "int"){
+        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
         echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "bool"){
