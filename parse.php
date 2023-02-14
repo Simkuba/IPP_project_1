@@ -77,6 +77,19 @@ function var_symb_opc(&$arr)
 function var_opc(&$arr)
 {
     global $order;
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
+
+    //arg1: variable expected
+    if(preg_match_all("/(LF|TF|GF)@[$&-_A-Za-z!?][0-9$&-_A-Za-z!?]*/", $arr[1])){
+        echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg1!\n");
+        exit(ER_OTHER);
+    }
+
+    $order++;
+    return;
 }
 
 function label_opc(&$arr)
