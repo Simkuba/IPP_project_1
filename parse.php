@@ -21,7 +21,7 @@ define("ER_OTHER", 23);
 //global variable for counting instructions
 $order = 1;
 
-//functions for printing xml code TODO: nepovolene znaky za koncem povolenych argumentu krom komentaru
+//functions for printing xml code TODO: nepovolene znaky za koncem povolenych argumentu krom komentaru, v regexu chybi *
 function no_args_opc(&$arr)
 {
     global $order;
