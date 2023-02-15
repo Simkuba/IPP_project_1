@@ -347,6 +347,14 @@ while(($line = fgets(STDIN)) != NULL)
             echo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             echo("<program language=\"IPPcode23\">\n");
         }
+        else if(empty($line)){
+            //empty lines before header is allowed
+            continue;
+        }
+        else if(preg_match_all("/^#/", $arr[0])){
+            //comment lines before header is allowed
+            continue;
+        }
         else{
             fprintf(STDERR,"Chybna nebo chybejici hlavicka ve zdrojovem kodu!\n");
             exit(ER_HEADER);
@@ -360,11 +368,14 @@ while(($line = fgets(STDIN)) != NULL)
         continue;
     }
 
+    //comment line -> skip
+    if(preg_match_all("/^#/", $arr[0])){
+        //comment lines before header is allowed
+        continue;
+    }
+
     switch($arr[0])
     {
-        /**** comment ****/
-        case "#":
-            break;
         /**** no args ****/
         case "CREATEFRAME":
         case "PUSHFRAME":
