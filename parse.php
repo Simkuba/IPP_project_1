@@ -50,7 +50,7 @@ function symb1_symb2_shortcut(&$arr)
     //arg2: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
     //dividing symbol to type and it's value
     $symb = explode_first("@", $arr[2]);
-    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
         //symbol is a variable
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
@@ -75,7 +75,7 @@ function symb1_symb2_shortcut(&$arr)
     //arg3: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
     //dividing symbol to type and it's value
     $symb = explode_first("@", $arr[3]);
-    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[3])){
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[3])){
         //symbol is a variable
         echo("      <arg3 type=\"var\">").$arr[3]."</arg3>\n";
     }
@@ -116,7 +116,7 @@ function var_symb_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: variable expected
-    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -127,7 +127,7 @@ function var_symb_opc(&$arr)
     //arg2: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
     //dividing symbol to type and it's value
     $symb = explode_first("@", $arr[2]);
-    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
         //symbol is a variable
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
@@ -160,7 +160,7 @@ function var_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: variable expected
-    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -179,7 +179,7 @@ function label_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: label is expected
-    if(preg_match_all("/[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    if(preg_match_all("/^[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -237,7 +237,7 @@ function var_symb1_symb2_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: variable expected
-    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -260,7 +260,7 @@ function var_type_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: variable expected
-    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -297,7 +297,7 @@ function label_symb1_symb2_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: label is expected
-    if(preg_match_all("/[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    if(preg_match_all("/^[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
     }
     else{
