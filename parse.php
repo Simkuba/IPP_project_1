@@ -21,7 +21,86 @@ define("ER_OTHER", 23);
 //global variable for counting instructions
 $order = 1;
 
-//functions for printing xml code TODO: nepovolene znaky za koncem povolenych argumentu krom komentaru, v regexu chybi *
+/**
+ * function that divide string by the first apperence of certain character
+ * @char character by which to split the string
+ * @string string to be splitted
+ * @ret new array with string before char on pos 0 and string after char in pos 1 or script ends with error code 23
+ */
+function explode_first($char, $string)
+{
+    $pos = strpos($string, $char);
+    if ($pos === false) {
+        //char not found, syntax error -> abort
+        exit(ER_OTHER);
+    } 
+    else {
+        //char found, split the string into two substrings
+        $before = substr($string, 0, $pos);
+        $after = substr($string, $pos + 1);
+        $new_arr[0] = $before;
+        $new_arr[1] = $after;
+        return $new_arr;
+    }
+}
+
+//function for printing and checking arg2 symbol and arg3 symbol
+function symb1_symb2_shortcut(&$arr)
+{
+    //arg2: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //dividing symbol to type and it's value
+    $symb = explode_first("@", $arr[2]);
+    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
+        //symbol is a variable
+        echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
+    }
+    else if($symb[0] == "int"){
+        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
+    }
+    else if($symb[0] == "bool"){
+        echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
+    }
+    else if($symb[0] == "string"){
+        echo("      <arg2 type=\"string\">").$symb[1]."</arg2>\n";
+    }
+    else if($symb[0] == "nil"){
+        echo("      <arg2 type=\"nil\">").$symb[1]."</arg2>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg2!\n");
+        exit(ER_OTHER);
+    }
+
+    //arg3: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //dividing symbol to type and it's value
+    $symb = explode_first("@", $arr[3]);
+    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[3])){
+        //symbol is a variable
+        echo("      <arg3 type=\"var\">").$arr[3]."</arg3>\n";
+    }
+    else if($symb[0] == "int"){
+        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        echo("      <arg3 type=\"int\">").$symb[1]."</arg3>\n";
+    }
+    else if($symb[0] == "bool"){
+        echo("      <arg3 type=\"bool\">").$symb[1]."</arg3>\n";
+    }
+    else if($symb[0] == "string"){
+        echo("      <arg3 type=\"string\">").$symb[1]."</arg3>\n";
+    }
+    else if($symb[0] == "nil"){
+        echo("      <arg3 type=\"nil\">").$symb[1]."</arg3>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg2!\n");
+        exit(ER_OTHER);
+    }
+
+    return;
+}
+
+//functions for printing xml code TODO: nepovolene znaky za koncem povolenych argumentu krom komentaru
 function no_args_opc(&$arr)
 {
     global $order;
@@ -37,7 +116,7 @@ function var_symb_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: variable expected
-    if(preg_match_all("/(LF|TF|GF)@[$&-_A-Za-z!?][0-9$&-_A-Za-z!?]*/", $arr[1])){
+    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -45,9 +124,10 @@ function var_symb_opc(&$arr)
         exit(ER_OTHER);
     }
 
-    //arg2: symb expected //TODO: funguje, jen je treba osetrit escape seq ve strs
-    $symb = explode("@", $arr[2]);
-    if(preg_match("/(LF|TF|GF)@[$&-_A-Za-z!?][0-9$&-_A-Za-z!?]*/", $arr[2])){
+    //arg2: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //dividing symbol to type and it's value
+    $symb = explode_first("@", $arr[2]);
+    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
         //symbol is a variable
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
@@ -80,7 +160,7 @@ function var_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: variable expected
-    if(preg_match_all("/(LF|TF|GF)@[$&-_A-Za-z!?][0-9$&-_A-Za-z!?]*/", $arr[1])){
+    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -88,6 +168,7 @@ function var_opc(&$arr)
         exit(ER_OTHER);
     }
 
+    echo("  </instruction>\n");
     $order++;
     return;
 }
@@ -95,26 +176,141 @@ function var_opc(&$arr)
 function label_opc(&$arr)
 {
     global $order;
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
+
+    //arg1: label is expected
+    if(preg_match_all("/[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg1!\n");
+        exit(ER_OTHER);
+    }
+
+    echo("  </instruction>\n");
+    $order++;
+    return;
+
 }
 
 function symb_opc(&$arr)
 {
     global $order;
+
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
+
+    //arg1: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //dividing symbol to type and it's value
+    $symb = explode_first("@", $arr[1]);
+    if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        //symbol is a variable
+        echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
+    }
+    else if($symb[0] == "int"){
+        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        echo("      <arg1 type=\"int\">").$symb[1]."</arg1>\n";
+    }
+    else if($symb[0] == "bool"){
+        echo("      <arg1 type=\"bool\">").$symb[1]."</arg1>\n";
+    }
+    else if($symb[0] == "string"){
+        echo("      <arg1 type=\"string\">").$symb[1]."</arg1>\n";
+    }
+    else if($symb[0] == "nil"){
+        echo("      <arg1 type=\"nil\">").$symb[1]."</arg1>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg2!\n");
+        exit(ER_OTHER);
+    }
+
+    echo("  </instruction>\n");
+    $order++;
+    return;
+
 }
 
 function var_symb1_symb2_opc(&$arr)
 {
     global $order;
+
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
+
+    //arg1: variable expected
+    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg1!\n");
+        exit(ER_OTHER);
+    }
+
+    //symbol expected for arg1 and arg2
+    symb1_symb2_shortcut($arr);
+
+    echo("  </instruction>\n");
+    $order++;
+    return;
 }
 
 function var_type_opc(&$arr)
 {
     global $order;
+
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
+
+    //arg1: variable expected
+    if(preg_match_all("/(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg1!\n");
+        exit(ER_OTHER);
+    }
+
+    //arg2: type expected
+    $type = explode_first("@", $arr[2]);
+    if($type[0] == "int"){
+        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        echo("      <arg2 type=\"int\">").$type[1]."</arg2>\n";
+    }
+    else if($type[0] == "bool"){
+        echo("      <arg2 type=\"bool\">").$type[1]."</arg2>\n";
+    }
+    else if($type[0] == "string"){
+        echo("      <arg2 type=\"string\">").$type[1]."</arg2>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg2!\n");
+        exit(ER_OTHER);
+    }
+
+    echo("  </instruction>\n");
+    $order++;
+    return;
 }
 
 function label_symb1_symb2_opc(&$arr)
 {
     global $order;
+
+    echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
+
+    //arg1: label is expected
+    if(preg_match_all("/[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
+    }
+    else{
+        fprintf(STDERR, "Wrong format of arg1!\n");
+        exit(ER_OTHER);
+    }
+
+    //symbol expected for arg1 and arg2
+    symb1_symb2_shortcut($arr);
+
+    echo("  </instruction>\n");
+    $order++;
+    return;
 }
 
 //taking care of argument --help (-help)
