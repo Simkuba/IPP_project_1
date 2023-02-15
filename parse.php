@@ -36,10 +36,8 @@ function explode_first($char, $string)
     } 
     else {
         //char found, split the string into two substrings
-        $before = substr($string, 0, $pos);
-        $after = substr($string, $pos + 1);
-        $new_arr[0] = $before;
-        $new_arr[1] = $after;
+        $new_arr[0] = substr($string, 0, $pos);
+        $new_arr[1] = substr($string, $pos + 1);
         return $new_arr;
     }
 }
