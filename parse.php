@@ -49,9 +49,9 @@ function explode_first($char, $string)
  */
 function problem_chars_treatment($string)
 {
+    $string = str_replace("&", "&amp;", $string);
     $string = str_replace("<", "&lt;", $string);
     $string = str_replace(">", "&gt;", $string);
-    $string = str_replace("&", "&amp;", $string);
 
     return $string;
 }
@@ -76,7 +76,7 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "bool"){
-        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+        if($symb[1] != "true" || $symb[1] != "false"){   
             fprintf(STDERR, "\nŠpatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
@@ -115,7 +115,7 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg3 type=\"int\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "bool"){
-        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+        if($symb[1] != "true" || $symb[1] != "false"){   
             fprintf(STDERR, "\nŠpatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
@@ -191,7 +191,7 @@ function var_symb_opc(&$arr)
         echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "bool"){
-        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+        if($symb[1] != "true" || $symb[1] != "false"){   
             fprintf(STDERR, "\n Špatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
@@ -300,7 +300,7 @@ function symb_opc(&$arr)
         echo("      <arg1 type=\"int\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "bool"){
-        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+        if(!($symb[1] == "true" || $symb[1] == "false")){   
             fprintf(STDERR, "\n Špatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
@@ -383,26 +383,8 @@ function var_type_opc(&$arr)
     }
 
     //arg2: type expected
-    $type = explode_first("@", $arr[2]);
-    if($type[0] == "int"){
-        if(!preg_match_all("/^[0-9]+/", $type[1])){
-            fprintf(STDERR, "\n Špatný formát int@$type[1].\n");
-            exit(ER_OTHER);
-        }
-        
-        echo("      <arg2 type=\"int\">").$type[1]."</arg2>\n";
-    }
-    else if($type[0] == "bool"){
-        if(!preg_match_all("/^[true|false]$/", $type[1])){   
-            fprintf(STDERR, "\n Špatný formát bool@$type[1].\n");
-            exit(ER_OTHER);
-        }
-
-        echo("      <arg2 type=\"bool\">").$type[1]."</arg2>\n";
-    }
-    else if($type[0] == "string"){
-        $type[1] = problem_chars_treatment($type[1]);
-        echo("      <arg2 type=\"string\">").$type[1]."</arg2>\n";
+    if($arr[2] == "int" || $arr[2] == "string" || $arr[2] == "bool" ){
+        echo("      <arg2 type=\"type\">").$arr[2]."</arg2>\n";
     }
     else{
         fprintf(STDERR, "\n Špatný formát arg2!\n");
