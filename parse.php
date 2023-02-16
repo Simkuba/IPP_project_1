@@ -22,7 +22,7 @@ define("ER_OTHER", 23);
 $order = 1;
 
 /**
- * function that divide string by the first apperence of certain character
+ * @brief function that divide string by the first apperence of certain character
  * @char character by which to split the string
  * @string string to be splitted
  * @ret new array with string before char on pos 0 and string after char in pos 1 or script ends with error code 23
@@ -42,6 +42,20 @@ function explode_first($char, $string)
     }
 }
 
+/**
+ * @brief function looks for problematic XML characters (<,>,&) and replace them with proper XML form
+ * @string string to be searched
+ * @ret string with correct characters
+ */
+function problem_chars_treatment($string)
+{
+    $string = str_replace("<", "&lt;", $string);
+    $string = str_replace(">", "&gt;", $string);
+    $string = str_replace("&", "&amp;", $string);
+
+    return $string;
+}
+
 //function for printing and checking arg2 symbol and arg3 symbol
 function symb1_symb2_shortcut(&$arr)
 {
@@ -50,6 +64,7 @@ function symb1_symb2_shortcut(&$arr)
     $symb = explode_first("@", $arr[2]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
         //symbol is a variable
+        $arr[2] = problem_chars_treatment($arr[2]);
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
     else if($symb[0] == "int"){
@@ -68,6 +83,7 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "string"){
+        $symb[1] = problem_chars_treatment($symb[1]);
         echo("      <arg2 type=\"string\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "nil"){
@@ -87,6 +103,7 @@ function symb1_symb2_shortcut(&$arr)
     $symb = explode_first("@", $arr[3]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[3])){
         //symbol is a variable
+        $arr[3] = problem_chars_treatment(($arr[3]));
         echo("      <arg3 type=\"var\">").$arr[3]."</arg3>\n";
     }
     else if($symb[0] == "int"){
@@ -106,6 +123,7 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg3 type=\"bool\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "string"){
+        $symb[1] = problem_chars_treatment($symb[1]);
         echo("      <arg3 type=\"string\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "nil"){
@@ -124,7 +142,7 @@ function symb1_symb2_shortcut(&$arr)
     return;
 }
 
-//functions for printing xml code TODO: problemove znaky XML
+//functions for printing xml code
 function no_args_opc(&$arr)
 {
     global $order;
@@ -148,6 +166,7 @@ function var_symb_opc(&$arr)
 
     //arg1: variable expected
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        $arr[1] = problem_chars_treatment($arr[1]);
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -160,6 +179,7 @@ function var_symb_opc(&$arr)
     $symb = explode_first("@", $arr[2]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
         //symbol is a variable
+        $arr[2] = problem_chars_treatment($arr[2]);
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
     else if($symb[0] == "int"){
@@ -178,6 +198,7 @@ function var_symb_opc(&$arr)
         echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "string"){
+        $symb[1] = problem_chars_treatment($symb[1]);
         echo("      <arg2 type=\"string\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "nil"){
@@ -211,6 +232,7 @@ function var_opc(&$arr)
 
     //arg1: variable expected
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        $arr[1] = problem_chars_treatment($arr[1]);
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -266,6 +288,7 @@ function symb_opc(&$arr)
     $symb = explode_first("@", $arr[1]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
         //symbol is a variable
+        $arr[1] = problem_chars_treatment($arr[1]);
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else if($symb[0] == "int"){
@@ -285,6 +308,7 @@ function symb_opc(&$arr)
         echo("      <arg1 type=\"bool\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "string"){
+        $symb[1] = problem_chars_treatment($symb[1]);
         echo("      <arg1 type=\"string\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "nil"){
@@ -320,6 +344,7 @@ function var_symb1_symb2_opc(&$arr)
 
     //arg1: variable expected
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        $arr[1] = problem_chars_treatment($arr[1]);
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -349,6 +374,7 @@ function var_type_opc(&$arr)
 
     //arg1: variable expected
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+        $arr[1] = problem_chars_treatment($arr[1]);
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -375,6 +401,7 @@ function var_type_opc(&$arr)
         echo("      <arg2 type=\"bool\">").$type[1]."</arg2>\n";
     }
     else if($type[0] == "string"){
+        $type[1] = problem_chars_treatment($type[1]);
         echo("      <arg2 type=\"string\">").$type[1]."</arg2>\n";
     }
     else{
