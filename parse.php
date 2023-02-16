@@ -45,7 +45,7 @@ function explode_first($char, $string)
 //function for printing and checking arg2 symbol and arg3 symbol
 function symb1_symb2_shortcut(&$arr)
 {
-    //arg2: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //arg2: symbol expected
     //dividing symbol to type and it's value
     $symb = explode_first("@", $arr[2]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
@@ -53,24 +53,36 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
     else if($symb[0] == "int"){
-        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        if(!preg_match_all("/^[0-9]+/", $symb[1])){
+            fprintf(STDERR, "\nŠpatný formát int@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "bool"){
+        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+            fprintf(STDERR, "\nŠpatný formát bool@$symb[1].\n");
+            exit(ER_OTHER);
+        }
         echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "string"){
         echo("      <arg2 type=\"string\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "nil"){
+        if($symb[1] != "nil"){
+            fprintf(STDERR, "\nŠpatný formát nil@$symb[1].\n");
+            exit(ER_OTHER);
+        }
         echo("      <arg2 type=\"nil\">").$symb[1]."</arg2>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg2!\n");
+        fprintf(STDERR, "Špatný formát arg2!\n");
         exit(ER_OTHER);
     }
 
-    //arg3: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //arg3: symbol expected 
     //dividing symbol to type and it's value
     $symb = explode_first("@", $arr[3]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[3])){
@@ -78,20 +90,34 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg3 type=\"var\">").$arr[3]."</arg3>\n";
     }
     else if($symb[0] == "int"){
-        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        if(!preg_match_all("/^[0-9]+/", $symb[1])){
+            fprintf(STDERR, "\n Špatný formát int@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+        
         echo("      <arg3 type=\"int\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "bool"){
+        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+            fprintf(STDERR, "\nŠpatný formát bool@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg3 type=\"bool\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "string"){
         echo("      <arg3 type=\"string\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "nil"){
+        if($symb[1] != "nil"){
+            fprintf(STDERR, "\n Špatný formát nil@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg3 type=\"nil\">").$symb[1]."</arg3>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg2!\n");
+        fprintf(STDERR, "\nŠpatný formát arg2!\n");
         exit(ER_OTHER);
     }
 
@@ -105,7 +131,7 @@ function no_args_opc(&$arr)
 
     //only comment is allowed after this opcode
     if((!empty($arr[1])) && (!preg_match_all("/^#/", $arr[1]))){
-        fprintf(STDERR, "\nOPCODE $arr[0] does not support arguments!\n");
+        fprintf(STDERR, "\nOperační kód $arr[0] nepodporuje žádné další argumenty!\n");
         exit(ER_OTHER);
     }
 
@@ -125,11 +151,11 @@ function var_symb_opc(&$arr)
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg1!\n");
+        fprintf(STDERR, " Špatný formát arg1!\n");
         exit(ER_OTHER);
     }
 
-    //arg2: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //arg2: symbol expected
     //dividing symbol to type and it's value
     $symb = explode_first("@", $arr[2]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[2])){
@@ -137,26 +163,39 @@ function var_symb_opc(&$arr)
         echo("      <arg2 type=\"var\">").$arr[2]."</arg2>\n";
     }
     else if($symb[0] == "int"){
-        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        if(!preg_match_all("/^[0-9]+/", $symb[1])){
+            fprintf(STDERR, "\n Špatný formát int@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "bool"){
+        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+            fprintf(STDERR, "\n Špatný formát bool@$symb[1].\n");
+            exit(ER_OTHER);
+        }
         echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "string"){
         echo("      <arg2 type=\"string\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "nil"){
+        if($symb[1] != "nil"){
+            fprintf(STDERR, "\n Špatný formát nil@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg2 type=\"nil\">").$symb[1]."</arg2>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg2!\n");
+        fprintf(STDERR, " Špatný formát arg2!\n");
         exit(ER_OTHER);
     }
 
     //only comment is allowed after arg1 and arg2
     if((!empty($arr[3])) && (!preg_match_all("/^#/", $arr[3]))){
-        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var> <symb>\n");
+        fprintf(STDERR, "\n Špatný formát opcode $arr[0]. Usage: $arr[0] <var> <symb>\n");
         exit(ER_OTHER);
     }
 
@@ -175,13 +214,13 @@ function var_opc(&$arr)
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg1!\n");
+        fprintf(STDERR, " Špatný formát arg1!\n");
         exit(ER_OTHER);
     }
 
     //only comment is allowed after arg1
     if((!empty($arr[2])) && (!preg_match_all("/^#/", $arr[2]))){
-        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var>\n");
+        fprintf(STDERR, "\n Špatný formát opcode $arr[0]. Usage: $arr[0] <var>\n");
         exit(ER_OTHER);
     }
 
@@ -200,13 +239,13 @@ function label_opc(&$arr)
         echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg1!\n");
+        fprintf(STDERR, " Špatný formát arg1!\n");
         exit(ER_OTHER);
     }
 
     //only comment is allowed after arg1
     if((!empty($arr[2])) && (!preg_match_all("/^#/", $arr[2]))){
-        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <label>\n");
+        fprintf(STDERR, "\n Špatný formát opcode $arr[0]. Usage: $arr[0] <label>\n");
         exit(ER_OTHER);
     }
 
@@ -222,7 +261,7 @@ function symb_opc(&$arr)
 
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
-    //arg1: symbol expected //TODO: funguje, jen je treba osetrit escape seq ve strs
+    //arg1: symbol expected
     //dividing symbol to type and it's value
     $symb = explode_first("@", $arr[1]);
     if(preg_match_all("/^(LF|TF|GF)@[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
@@ -230,26 +269,40 @@ function symb_opc(&$arr)
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else if($symb[0] == "int"){
-        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        if(!preg_match_all("/^[0-9]+/", $symb[1])){
+            fprintf(STDERR, "\n Špatný formát int@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+        
         echo("      <arg1 type=\"int\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "bool"){
+        if(!preg_match_all("/^[true|false]$/", $symb[1])){   
+            fprintf(STDERR, "\n Špatný formát bool@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg1 type=\"bool\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "string"){
         echo("      <arg1 type=\"string\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "nil"){
+        if($symb[1] != "nil"){
+            fprintf(STDERR, "\n Špatný formát nil@$symb[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg1 type=\"nil\">").$symb[1]."</arg1>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg2!\n");
+        fprintf(STDERR, " Špatný formát arg2!\n");
         exit(ER_OTHER);
     }
 
     //only comment is allowed after arg1
     if((!empty($arr[2])) && (!preg_match_all("/^#/", $arr[2]))){
-        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <symb>\n");
+        fprintf(STDERR, "\n Špatný formát opcode $arr[0]. Usage: $arr[0] <symb>\n");
         exit(ER_OTHER);
     }
 
@@ -270,7 +323,7 @@ function var_symb1_symb2_opc(&$arr)
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg1!\n");
+        fprintf(STDERR, " Špatný formát arg1!\n");
         exit(ER_OTHER);
     }
 
@@ -279,7 +332,7 @@ function var_symb1_symb2_opc(&$arr)
 
     //only comment is allowed after arg3
     if((!empty($arr[4])) && (!preg_match_all("/^#/", $arr[4]))){
-        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var> <symb1> <symb2>\n");
+        fprintf(STDERR, "\n Špatný formát opcode $arr[0]. Usage: $arr[0] <var> <symb1> <symb2>\n");
         exit(ER_OTHER);
     }
 
@@ -299,30 +352,39 @@ function var_type_opc(&$arr)
         echo("      <arg1 type=\"var\">").$arr[1]."</arg1>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg1!\n");
+        fprintf(STDERR, " Špatný formát arg1!\n");
         exit(ER_OTHER);
     }
 
     //arg2: type expected
     $type = explode_first("@", $arr[2]);
     if($type[0] == "int"){
-        //TODO: kontrola, zda se opravdu jedná o int, podobně kontrolvoat i ostatní
+        if(!preg_match_all("/^[0-9]+/", $type[1])){
+            fprintf(STDERR, "\n Špatný formát int@$type[1].\n");
+            exit(ER_OTHER);
+        }
+        
         echo("      <arg2 type=\"int\">").$type[1]."</arg2>\n";
     }
     else if($type[0] == "bool"){
+        if(!preg_match_all("/^[true|false]$/", $type[1])){   
+            fprintf(STDERR, "\n Špatný formát bool@$type[1].\n");
+            exit(ER_OTHER);
+        }
+
         echo("      <arg2 type=\"bool\">").$type[1]."</arg2>\n";
     }
     else if($type[0] == "string"){
         echo("      <arg2 type=\"string\">").$type[1]."</arg2>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg2!\n");
+        fprintf(STDERR, "\n Špatný formát arg2!\n");
         exit(ER_OTHER);
     }
 
     //only comment is allowed after arg1 and arg2
     if((!empty($arr[3])) && (!preg_match_all("/^#/", $arr[3]))){
-        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var> <type>\n");
+        fprintf(STDERR, "\n Špatný formát opcode $arr[0]. Usage: $arr[0] <var> <type>\n");
         exit(ER_OTHER);
     }
 
@@ -342,7 +404,7 @@ function label_symb1_symb2_opc(&$arr)
         echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
     }
     else{
-        fprintf(STDERR, "Wrong format of arg1!\n");
+        fprintf(STDERR, "\n Špatný formát arg1!\n");
         exit(ER_OTHER);
     }
 
@@ -351,7 +413,7 @@ function label_symb1_symb2_opc(&$arr)
 
     //only comment is allowed after arg3
     if((!empty($arr[4])) && (!preg_match_all("/^#/", $arr[4]))){
-        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <label> <symb1> <sym2>\n");
+        fprintf(STDERR, "\n Špatný formát opcode $arr[0]. Usage: $arr[0] <label> <symb1> <sym2>\n");
         exit(ER_OTHER);
     }
 
@@ -363,7 +425,7 @@ function label_symb1_symb2_opc(&$arr)
 //taking care of argument --help (-help)
 if($argc > 1){
     if(($argv[1] == "--help" && $argc > 2) || ($argv[1] == "-help" && $argc > 2)){
-        fprintf(STDERR, "S parametrem --help nelze kombinovat dalsi parametry!\n");
+        fprintf(STDERR, "\nS parametrem --help nelze kombinovat dalsi parametry!\n");
         exit(ER_PARAMS);
     }
     else if($argv[1] == "--help" || $argv[1] == "-help"){
@@ -371,7 +433,7 @@ if($argc > 1){
         exit(ER_NONE);
     }
     else{
-        fprintf(STDERR, "Jediny podporovany parametr: --help\n");
+        fprintf(STDERR, "\nJediny podporovany parametr: --help\n");
         exit(ER_PARAMS);
     }
 }
@@ -405,7 +467,7 @@ while(($line = fgets(STDIN)) != NULL)
             continue;
         }
         else{
-            fprintf(STDERR,"Chybna nebo chybejici hlavicka ve zdrojovem kodu!\n");
+            fprintf(STDERR,"\nChybna nebo chybejici hlavicka ve zdrojovem kodu!\n");
             exit(ER_HEADER);
         }
         
@@ -483,7 +545,7 @@ while(($line = fgets(STDIN)) != NULL)
             label_symb1_symb2_opc($arr);
             break;
         default:
-            fprintf(STDERR, "Neznamy nebo chybny operacni kod ve zdrojovem kodu!\n");
+            fprintf(STDERR, "\nNeznamy nebo chybny operacni kod ve zdrojovem kodu!\n");
             exit(ER_OPCODE);
     }
 
