@@ -98,10 +98,17 @@ function symb1_symb2_shortcut(&$arr)
     return;
 }
 
-//functions for printing xml code TODO: nepovolene znaky za koncem povolenych argumentu krom komentaru
+//functions for printing xml code TODO: problemove znaky XML
 function no_args_opc(&$arr)
 {
     global $order;
+
+    //only comment is allowed after this opcode
+    if((!empty($arr[1])) && (!preg_match_all("/^#/", $arr[1]))){
+        fprintf(STDERR, "\nOPCODE $arr[0] does not support arguments!\n");
+        exit(ER_OTHER);
+    }
+
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
     echo("  </instruction>\n");
     $order++;
@@ -147,6 +154,12 @@ function var_symb_opc(&$arr)
         exit(ER_OTHER);
     }
 
+    //only comment is allowed after arg1 and arg2
+    if((!empty($arr[3])) && (!preg_match_all("/^#/", $arr[3]))){
+        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var> <symb>\n");
+        exit(ER_OTHER);
+    }
+
     echo("  </instruction>\n");
     $order++;
     return;
@@ -166,6 +179,12 @@ function var_opc(&$arr)
         exit(ER_OTHER);
     }
 
+    //only comment is allowed after arg1
+    if((!empty($arr[2])) && (!preg_match_all("/^#/", $arr[2]))){
+        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var>\n");
+        exit(ER_OTHER);
+    }
+
     echo("  </instruction>\n");
     $order++;
     return;
@@ -182,6 +201,12 @@ function label_opc(&$arr)
     }
     else{
         fprintf(STDERR, "Wrong format of arg1!\n");
+        exit(ER_OTHER);
+    }
+
+    //only comment is allowed after arg1
+    if((!empty($arr[2])) && (!preg_match_all("/^#/", $arr[2]))){
+        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <label>\n");
         exit(ER_OTHER);
     }
 
@@ -222,6 +247,12 @@ function symb_opc(&$arr)
         exit(ER_OTHER);
     }
 
+    //only comment is allowed after arg1
+    if((!empty($arr[2])) && (!preg_match_all("/^#/", $arr[2]))){
+        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <symb>\n");
+        exit(ER_OTHER);
+    }
+
     echo("  </instruction>\n");
     $order++;
     return;
@@ -243,8 +274,14 @@ function var_symb1_symb2_opc(&$arr)
         exit(ER_OTHER);
     }
 
-    //symbol expected for arg1 and arg2
+    //symbol expected for arg2 and arg3
     symb1_symb2_shortcut($arr);
+
+    //only comment is allowed after arg3
+    if((!empty($arr[4])) && (!preg_match_all("/^#/", $arr[4]))){
+        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var> <symb1> <symb2>\n");
+        exit(ER_OTHER);
+    }
 
     echo("  </instruction>\n");
     $order++;
@@ -283,6 +320,12 @@ function var_type_opc(&$arr)
         exit(ER_OTHER);
     }
 
+    //only comment is allowed after arg1 and arg2
+    if((!empty($arr[3])) && (!preg_match_all("/^#/", $arr[3]))){
+        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <var> <type>\n");
+        exit(ER_OTHER);
+    }
+
     echo("  </instruction>\n");
     $order++;
     return;
@@ -303,8 +346,14 @@ function label_symb1_symb2_opc(&$arr)
         exit(ER_OTHER);
     }
 
-    //symbol expected for arg1 and arg2
+    //symbol expected for arg2 and arg3
     symb1_symb2_shortcut($arr);
+
+    //only comment is allowed after arg3
+    if((!empty($arr[4])) && (!preg_match_all("/^#/", $arr[4]))){
+        fprintf(STDERR, "\nWrong format of opcode $arr[0]. Usage: $arr[0] <label> <symb1> <sym2>\n");
+        exit(ER_OTHER);
+    }
 
     echo("  </instruction>\n");
     $order++;
@@ -369,8 +418,7 @@ while(($line = fgets(STDIN)) != NULL)
     }
 
     //comment line -> skip
-    if(preg_match_all("/^#/", $arr[0])){
-        //comment lines before header is allowed
+    if(preg_match_all("/^#/", $arr[0]) || preg_match_all("/^[ ]*#/", $line)){
         continue;
     }
 
