@@ -7,7 +7,7 @@
 
 //debug to stderr
 ini_set('display_errors', 'stderr');
-
+//TODO: kontrola, zda se nekde nemaj pouzivat jiny error cody, osetrit rozsah esc. seq
 //macros for error codes
 define("ER_NONE", 0);
 define("ER_PARAMS", 10);
