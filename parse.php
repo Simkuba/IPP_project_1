@@ -76,11 +76,14 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "bool"){
-        if($symb[1] != "true" || $symb[1] != "false"){   
+        if($symb[1] == "true" xor $symb[1] == "false"){   
+            echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
+        }
+        else{
             fprintf(STDERR, "\nŠpatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
-        echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
+
     }
     else if($symb[0] == "string"){
         $symb[1] = problem_chars_treatment($symb[1]);
@@ -115,12 +118,13 @@ function symb1_symb2_shortcut(&$arr)
         echo("      <arg3 type=\"int\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "bool"){
-        if($symb[1] != "true" || $symb[1] != "false"){   
+        if($symb[1] == "true" xor $symb[1] == "false"){   
+            echo("      <arg3 type=\"bool\">").$symb[1]."</arg3>\n";
+        }
+        else{
             fprintf(STDERR, "\nŠpatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
-
-        echo("      <arg3 type=\"bool\">").$symb[1]."</arg3>\n";
     }
     else if($symb[0] == "string"){
         $symb[1] = problem_chars_treatment($symb[1]);
@@ -191,11 +195,13 @@ function var_symb_opc(&$arr)
         echo("      <arg2 type=\"int\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "bool"){
-        if($symb[1] != "true" || $symb[1] != "false"){   
+        if($symb[1] == "true" xor $symb[1] == "false"){  
+            echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
+        }
+        else{
             fprintf(STDERR, "\n Špatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
-        echo("      <arg2 type=\"bool\">").$symb[1]."</arg2>\n";
     }
     else if($symb[0] == "string"){
         $symb[1] = problem_chars_treatment($symb[1]);
@@ -300,12 +306,13 @@ function symb_opc(&$arr)
         echo("      <arg1 type=\"int\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "bool"){
-        if(!($symb[1] == "true" || $symb[1] == "false")){   
+        if($symb[1] == "true" xor $symb[1] == "false"){   
+            echo("      <arg1 type=\"bool\">").$symb[1]."</arg1>\n";
+        }
+        else{
             fprintf(STDERR, "\n Špatný formát bool@$symb[1].\n");
             exit(ER_OTHER);
         }
-
-        echo("      <arg1 type=\"bool\">").$symb[1]."</arg1>\n";
     }
     else if($symb[0] == "string"){
         $symb[1] = problem_chars_treatment($symb[1]);
@@ -531,6 +538,7 @@ while(($line = fgets(STDIN)) != NULL)
         /**** <var> <symb1> <symb2> ****/
         case "ADD":
         case "SUB":
+        case "MUL":
         case "IDIV":
         case "LT":
         case "GT":
