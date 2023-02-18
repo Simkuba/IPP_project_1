@@ -263,7 +263,7 @@ function label_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: label is expected
-    if(preg_match_all("/^[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    if(preg_match_all("/^[$&\-_A-Za-z!?*][!$&\-0-9A-Za-z?_*]*$/", $arr[1])){
         echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
     }
     else{
@@ -416,7 +416,8 @@ function label_symb1_symb2_opc(&$arr)
     echo("  <instruction order=\"").$order."\" opcode=\"".$arr[0]."\">\n";
 
     //arg1: label is expected
-    if(preg_match_all("/^[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*/", $arr[1])){
+    $label = explode("@", $arr[1]);
+    if(preg_match_all("/^[$&\-_A-Za-z!?*][0-9$&\-_A-Za-z!?*]*$/", $arr[1])){
         echo("      <arg1 type=\"label\">").$arr[1]."</arg1>\n";
     }
     else{
