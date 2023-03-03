@@ -7,9 +7,7 @@
 
 //debug to stderr
 ini_set('display_errors', 'stderr');
-//TODO: kontrola rozsahu a platnosti escape seq.
-//TODO: funkce, ktera bude kontrolovat existenci # a jeho korektniho umisteni (napr. u variable musi byt nejdriv identifikator (pismeno, znak))
-// a pote pomoci expolode string rozdeli a vrati pouze nakomentovanou cast stringu
+
 //macros for error codes
 define("ER_NONE", 0);
 define("ER_PARAMS", 10);
