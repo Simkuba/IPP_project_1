@@ -46,11 +46,16 @@ function explode_first($char, $string)
 
 /**
  * @brief function looks for problematic XML characters (<,>,&) and replace them with proper XML form
+ *        it also looks for escape sequences and checks them
  * @string string to be searched
  * @ret string with correct characters
  */
 function problem_chars_treatment($string)
 {
+    if(!preg_match("/^(?:[^\\\\\r\n]|\\\\[0-9]{3})*$/s", $string)){
+        fprintf(STDERR, "Řetězec $string obsahuje neplatnou escape sequence!\n");
+        exit(ER_OTHER);
+    }
     $string = str_replace("&", "&amp;", $string);
     $string = str_replace("<", "&lt;", $string);
     $string = str_replace(">", "&gt;", $string);
@@ -59,7 +64,7 @@ function problem_chars_treatment($string)
 }
 
 /**
- * @brief function looks for comment in string, which is not separated from the string with <ws>
+ * @brief if comment is present, fuction deletes it
  * @string string to be searched
  * @ret string before comment or original string if no comment is present
  */
@@ -67,8 +72,8 @@ function find_comment($string)
 {
     if(preg_match_all("/#/", $string)){
         $string = explode_first("#", $string);
-        $ret_string = $string[0];
-        return $ret_string;
+        //$ret_string = $string[0];
+        return $string[0];
     }
     else{
         return $string;
@@ -491,6 +496,9 @@ while(($line = fgets(STDIN)) != NULL)
 
     //check for header
     if(!($header_present)){
+        $line = ltrim($line);
+        $arr[0] = strtoupper($line);
+        $arr[0] = trim($arr[0]);
         if($arr[0] == ".IPPCODE23"){
             $header_present = true;
 
@@ -499,11 +507,11 @@ while(($line = fgets(STDIN)) != NULL)
             echo("<program language=\"IPPcode23\">\n");
         }
         else if(empty($line)){
-            //empty lines before header is allowed
+            //empty lines before header are allowed
             continue;
         }
         else if(preg_match_all("/^#/", $arr[0])){
-            //comment lines before header is allowed
+            //comment lines before header are allowed
             continue;
         }
         else{
