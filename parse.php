@@ -7,7 +7,9 @@
 
 //debug to stderr
 ini_set('display_errors', 'stderr');
-//TODO: kontrola, zda se nekde nemaj pouzivat jiny error cody, kontrola rozsahu a platnosti escape seq.
+//TODO: kontrola rozsahu a platnosti escape seq.
+//TODO: funkce, ktera bude kontrolovat existenci # a jeho korektniho umisteni (napr. u variable musi byt nejdriv identifikator (pismeno, znak))
+// a pote pomoci expolode string rozdeli a vrati pouze nakomentovanou cast stringu
 //macros for error codes
 define("ER_NONE", 0);
 define("ER_PARAMS", 10);
@@ -23,7 +25,7 @@ $order = 1;
 
 /**
  * @brief function that divide string by the first apperence of certain character
- * @char character by which to split the string
+ * @char character by which the string will be splitted
  * @string string to be splitted
  * @ret new array with string before char on pos 0 and string after char in pos 1 or script ends with error code 23
  */
@@ -54,6 +56,23 @@ function problem_chars_treatment($string)
     $string = str_replace(">", "&gt;", $string);
 
     return $string;
+}
+
+/**
+ * @brief function looks for comment in string, which is not separated from the string with <ws>
+ * @string string to be searched
+ * @ret string before comment or original string if no comment is present
+ */
+function find_comment($string)
+{
+    if(preg_match_all("/#/", $string)){
+        $string = explode_first("#", $string);
+        $ret_string = $string[0];
+        return $ret_string;
+    }
+    else{
+        return $string;
+    }
 }
 
 //function for printing and checking arg2 symbol and arg3 symbol
@@ -460,8 +479,13 @@ $header_present = false;
 //main loop
 while(($line = fgets(STDIN)) != NULL)
 {
-    //deleting new line, cutting line into array of strings and transfer the first word to uppercase
+    //deleting new line
     $line = rtrim($line);
+
+    //get rid off comments
+    $line = find_comment($line);
+
+    //cutting line into array of strings and transfer the first word to uppercase
     $arr = explode(" ", $line);
     $arr[0] = strtoupper($arr[0]);
 
