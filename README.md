@@ -12,3 +12,7 @@ Funkce, které mají na starost ověřování syntaktické a sémantické správ
 ## Ostatní funkce
 
 Mimo tzv. kontrolních funkcí popsaných v bodu 2. jsou implementovány také funkce, které pomáhají text formátovat nebo upravovat, aby vyhovoval formátu XML. O toto se stará např. funkce problem\_chars\_treatment, která kontroluje správnost escape sekvencí, pokud se v řetězci vyskytují, a také hledá a nahrazuje problematické znaky v XML (např.: &, <, >). Dalším příkladem je funkce explode\_first, která modifikuje PHP funkci explode a hledá první výskyt určitého znaku, což je využito například u hledání komentářů. 
+
+## Použití
+
+`php8.1 parse.php [--help]`
