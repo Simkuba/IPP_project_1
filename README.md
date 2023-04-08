@@ -1,59 +1,23 @@
-# IPK Project 1: IPK Calculator Protocol
+﻿Implementační dokumentace k 1. úloze do IPP 2022/2023 Jméno a příjmení: Jakub Čoček 
 
-## Task
+Login: xcocek00 
 
-Your task is to implement a client for the IPK Calculator Protocol [1].
-The client should be able to communicate with any server using IPKCP, not just the provided reference implementation.
+1. **Implementace konečného automatu** 
 
-The client is started using:
-`ipkcpc -h <host> -p <port> -m <mode>`
-where `host` is the IPv4 address of the server, `port` the server port, and `mode` either `tcp` or `udp` (e.g., `ipkcpc -h 1.2.3.4 -p 2023 -m udp`).
+Hlavním tělem skriptu je konečný automat, který je implementován pomocí příkazu switch. Automat bere každý řádek a podle operačního kódu předává řízení konkrétní funkci, které dále kontrolují sémantické 
 
-The client will use the appropriate protocol variant depending on the selected mode (binary for UDP, textual for TCP).
-It will read a list of commands from the standard input, one per line, and print the received responses on the standard output.
-Responses should be formatted according to the examples below.
-Any (client) errors should be printed to the standard **error output**.
+a syntaktické požadavky. Speciálním případem je kontrola hlavičky .IPPcode23, která není v kontrolována 
 
-The client should react to the *Interrupt* signal (`C-c`) by gracefully exiting, cleanly terminating the connection as appropriate for the selected mode.
+v hlavním těle automatu, ale je pro ni vytvořená speciální proměnná typu bool (flag), která v případě její správnosti dovolí zahájit práci automatu, v opačném případě je program ukončen s odpovídajícím chybovým kódem.  
 
-### Input/Output Examples
+![](Aspose.Words.aa4c5410-f031-42fd-8d12-80aee7438ee2.001.jpeg)
 
-#### Binary
+*Obrázek 1 - konečný automat*
 
-Input:
-```
-(+ 1 2)
-(a b)
-```
+2. **Kontrolní funkce** 
 
-Output:
-```
-OK:3
-ERR:<error message>
-```
+Funkce, které mají na starost ověřování syntaktické a sémantické správnosti využívají regulární výrazy pomocí PHP funkce preg\_match\_all. Dále je také ověřováno správné pořadí a typ argumentů, které příslušné operační kódy vyžadují. 
 
-#### Textual
+3. **Ostatní funkce** 
 
-Input:
-```
-HELLO
-SOLVE (+ 1 2)
-BYE
-```
-
-Output:
-```
-HELLO
-RESULT 3
-BYE
-```
-
-## Submission
-
-The submission should follow all the requirements described in the general README.
-The project should build a single executable called `ipkcpc` in the project root using the default `make` target.
-This executable need not be self-contained, and can be implemented as a wrapper/launcher, but it should conform to the CLI interface described above.
-
-## References
-
-[1] [IPK Calculator Protocol](./Protocol.md)
+Mimo tzv. kontrolních funkcí popsaných v obrázku 1 a bodu 2. jsou implementovány také funkce, které pomáhají text formátovat nebo upravovat, aby vyhovoval formátu XML. O toto se stará např. funkce problem\_chars\_treatment, která kontroluje správnost escape sekvencí, pokud se v řetězci vyskytují, a také hledá a nahrazuje problematické znaky v XML (např.: &, <, >). Dalším příkladem je funkce explode\_first, která modifikuje PHP funkci explode a hledá první výskyt určitého znaku, což je využito například u hledání komentářů. 
