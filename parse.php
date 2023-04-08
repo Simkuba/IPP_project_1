@@ -460,7 +460,7 @@ function label_symb1_symb2_opc(&$arr)
     return;
 }
 
-//taking care of argument --help (-help)
+//taking care of parameter --help (-help)
 if($argc > 1){
     if(($argv[1] == "--help" && $argc > 2) || ($argv[1] == "-help" && $argc > 2)){
         fprintf(STDERR, "\nS parametrem --help nelze kombinovat dalsi parametry!\n");
