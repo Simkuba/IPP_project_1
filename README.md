@@ -17,4 +17,7 @@ Mimo tzv. kontrolních funkcí popsaných v bodu 2. jsou implementovány také f
 
 `php8.1 parse.php [--help]`
 
+## Evaluation:
+7.2/8
+
 #### Projekt slouží pouze jako inspirace, kopírovat kód silně nedoporučuji.
